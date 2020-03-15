@@ -1,5 +1,7 @@
 package Inheritance.q0f05ColouredPoints.MySolution;
 
-public class Points {
-
+public enum Colour {
+  RED,
+  GREEN,
+  BLUE,
 }

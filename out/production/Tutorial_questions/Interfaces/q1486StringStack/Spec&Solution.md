@@ -1,0 +1,144 @@
+## 1486: *String stack*
+
+This question, and the questions that depend on it, focuses on building collection classes for some specific types,
+similar to the collection classes found in the Java Collections Framework.
+This provides a good illustration of how powerful interfaces and abstract classes can be.
+A follow-on questions will make these questions *generic*.
+
+### Step 1
+Write a class `StringStackArray` to represent a stack of strings,
+storing the strings as an array of up to 100 elements.  Your class should support the following constructor and methods:
+
+```
+// Creates an empty string stack
+public StringStackArray();
+
+// If the stack is full, does nothing.
+// Otherwise, pushes the given String on to the top of the stack
+public void push(String s);
+
+// If the stack is empty, leaves the stack unchanged and returns
+// null.  Otherwise, removes the string that is on the top of
+// the stack and returns it
+public String pop();
+
+// Returns true iff the stack is empty
+public boolean isEmpty();
+```
+
+### Step 2
+Write another class, `StringStackList`, which also implements a stack
+of strings, but uses an object of the interface type `List<String>` to represent the contents of the stack.
+When this object is instantiated, an `ArrayList<String>` should be used.
+The class should support the same methods as `StringStackArray`, with an equivalent
+constructor, except that there is now no maximum number of elements for the stack.
+
+**Hint:** Do not be surprised if your implementation of `StringStackList` is pretty
+trivial.  In particular, you should be able to implement `push()` and `isEmpty()` using
+one line of Java each, by simply delegating the behaviour to appropriate methods of `List`.
+
+### Step 3
+Notice that `StringStackArray` and `StringStackList`
+provide the same methods.  Make this explicit by creating an *interface* called `StringStack`.
+The `StringStack` interface should specify the following methods:
+
+```
+public void push(String s);
+
+public String pop();
+
+public boolean isEmpty();
+```
+
+Modify `StringStackArray` and `StringStackList` so that they each *implement*
+the `StringStackInterface`.
+
+### Step 4
+Now write a `Demo` class with a static method:
+
+```
+public static void transferStacks(StringStack dst, StringStack src);
+```
+
+which should transfer the contents of `src` to `dst`
+by popping elements from `src` and pushing them on to `dst`
+until `src` is empty.  Implement `transferStacks` to have
+the desired effect.
+
+### Step 5
+Write a `main` method that creates two `StringStack`
+instances: one a `StringStackArray`, the other a `StringStackList`.
+The `main` method should push some strings on to the first stack, then invoke `transferStacks` to copy
+the first stack to the second stack.  `main` should then assert that the first stack is empty, and
+display the contents of the second stack by popping its elements one by one.
+
+What is powerful and elegant about the `transferStacks` method?!
+
+### Step 6
+Finally, modify `StringStackList` so that it uses a `LinkedList<String>` instead of an
+`ArrayList<String>` to represent its elements.  If you have implemented your classes correctly
+this change should be *trivial*.  Its simplicity illustrates the power of encapsulation.
+
+## Solution to [1486](../questions/1486): *String stack*
+
+See code at `solutions/code/tutorialquestions/question1486`
+
+The `StringStackArray` class implementation is straightforward: see the sample solution.
+
+The `StringStackList` class implementation is even more straightforward; perhaps so straightforward you may have
+worried that you were missing something!  Look at the sample solution.  The only slightly tricky part is implementing `pop()`
+so that the last element of the list is removed.
+
+You will see in the sample solution that `StringStackArray` and `StringStackList` both implement
+the `StringStack` interface.  Notice that the interface methods are declared public.  This is not actually
+necessary, as they are *implicitly* public.  However, it does no harm.  The implementations of these methods in
+`StringStackArray` and `StringStackList` must be declared public regardless.
+
+See how simple the implementation of `transferStacks` in *Demo.java* is:
+
+```
+public static void transferStacks(StringStack dst, StringStack src) {
+  while(!src.isEmpty()) {
+    dst.push(src.pop());
+  }
+}
+```
+
+Because we have a `StringStack` interface, we can write this method purely in terms of the interface
+type, regardless of the classes that provide actual types for `src` and `dst`.
+
+The power of this is illustrated in `main`, where we can write:
+
+```
+StringStack first = new StringStackArray();
+StringStack second = new StringStackList();
+...
+transferStacks(second, first);
+```
+
+Polymorphism here allows us to treat a `StringStackArray` and a `StringStackList` *uniformly*
+as objects of type `StringStack` when we call `transferStacks`.  Note that it would also work if we wrote:
+
+```
+StringStackArray first = new StringStackArray();
+StringStackList second = new StringStackList();
+...
+transferStacks(second, first);
+```
+
+In this case, the compiler *upcasts* `first` and `second` to `StringStack` when `transferStacks` is called.
+
+Finally, if we want to change `StringStackList` to use a `LinkedList` instead of an `ArrayList`, we need only change:
+
+```
+elements = new ArrayList<String>();
+```
+
+to
+
+```
+elements = new LinkedList<String>();
+```
+
+in the constructor of `StringStackList`.
+

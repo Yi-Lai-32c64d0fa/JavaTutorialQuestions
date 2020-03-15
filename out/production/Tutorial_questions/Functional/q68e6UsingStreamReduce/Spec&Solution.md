@@ -69,3 +69,13 @@ The purpose of this question is to give you practice writing reductions over str
     final int minOfMaxesEmpty = findMinOfMaxes(Collections.emptyList());
     final int minOfMaxesListOfEmptyLists = findMinOfMaxes(Arrays.asList(Collections.emptyList(), Collections.emptyList()));
     ```
+   
+   ## Solution to [68e6](../questions/68e6): *Using Stream.reduce*
+   
+   See code at `solutions/code/tutorialquestions/question68e6`
+   
+   Compare your solution to the sample code.
+   
+   Note the use in the sample code of `Integer.MAX_VALUE` and `Integer.MIN_VALUE` to get the largest and smallest representable integer values, respectively.
+   
+   That `findMinOfMaxes` works by mapping `findMax` over a streamed version of `listOfLists`.  It is necessary to collect the result of this map operation back to a list in order to invoke `findMin` on the result.
